@@ -2,6 +2,7 @@ export * from './orthography/OrthographyPage';
 export * from './pros-cons/ProsConsPage';
 export * from './pros-cons-stream/ProsConsStreamPage';
 export * from './translate/TranslatePage';
+export * from './translate/TranslateStreamPage';
 export * from './text-to-audio/TextToAudioPage';
 export * from './image-generation/ImageGenerationPage';
 export * from './image-tunning/ImageTunningPage';

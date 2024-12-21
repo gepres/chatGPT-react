@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { GptMessage, MyMessage, TextMessageBox, TextMessageBoxSelect, TypingLoader } from "../../components";
-import { translateUseCase } from "../../../core/use-cases";
+import { useRef, useState } from "react";
+import { translateStreamUseCase } from "../../../core/use-cases";
+import { GptMessage, MyMessage, TypingLoader, TextMessageBoxSelect } from "../../components";
 
 
 
@@ -23,26 +23,35 @@ const languages = [
 ];
 
 
-export const TranslatePage = () => {
+export const TranslateStreamPage = () => {
+    const abortController = useRef(new AbortController());
+    const isRunning = useRef(false);
+
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
 
 
 
   const handlePost = async (text:string, selectedOption:string) => {
+    if (isRunning.current) {
+      abortController.current.abort();
+      abortController.current = new AbortController();
+    }
       setIsLoading(true);
+      isRunning.current = true;
       const complementMessage = `Traduce: ${text} al idioma ${selectedOption}`;
       setMessages((prev) => [...prev, { text:complementMessage, isGpt: false }])
-      const {ok, message} = await translateUseCase(text, selectedOption);
-      if( !ok) {
-        setMessages((prev) => [...prev, { text: 'No se puede realizar la consulta', isGpt: true }]);
-      } else {
-        setMessages((prev) => [...prev, { 
-          text: message, 
-          isGpt: true, 
-        }]);
-      }
+      const stream = translateStreamUseCase(text, selectedOption, abortController.current.signal);
       setIsLoading(false);
+      setMessages((messages) => [...messages, { text: 'Estoy escribiendo...', isGpt: true }]);
+
+      for await (const text of stream) {
+        setMessages((messages) => {
+          const newMessage = [...messages];
+          newMessage[newMessage.length - 1].text = text;
+          return newMessage;
+        });
+      }
   }
 
   return (
