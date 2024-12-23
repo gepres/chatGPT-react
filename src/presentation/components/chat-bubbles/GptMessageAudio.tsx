@@ -1,10 +1,11 @@
 import Markdown from 'react-markdown'
 
 interface Props {
-  text: string
+  text: string,
+  audio: string
 }
 
-export const GptMessage = ({ text }: Props) => {
+export const GptMessageAudio = ({ text, audio }: Props) => {
   return (
     <div className="col-start-1 col-end-9 p-3 rounded-lg">
       <div className="flex flex-row items-start">
@@ -13,6 +14,12 @@ export const GptMessage = ({ text }: Props) => {
         </div>
         <div className="relative ml-3 text-sm bg-black bg-opacity-25 pt-3 pb-2 px-4 shadow rounded-xl">
           <Markdown>{text}</Markdown>
+          <audio
+           controls
+           src={audio}
+           className='w-full'
+           autoPlay
+           ></audio>
         </div>
       </div>
     </div>
