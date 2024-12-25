@@ -18,7 +18,7 @@ export const imageGenerationUseCase = async (prompt: string, originalImage?:stri
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ prompt, originalImage, maskImage })
+      body: JSON.stringify({ prompt, originalImage:originalImage, maskImage:maskImage })
     });
 
     if(!resp.ok) throw new Error('No se puede realizar la consulta')

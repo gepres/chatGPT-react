@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GptMessage, MyMessage, TypingLoader, TextMessageBox, GptMessageImage } from "../../components";
+import { GptMessage, MyMessage, TypingLoader, TextMessageBox, GptMessageImage, GptMessageSelectableImage } from "../../components";
 import { imageGenerationUseCase, imageVariationUseCase } from "../../../core/use-cases";
 
 interface Message {
@@ -17,6 +17,17 @@ export const ImageTunningPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
 
+  // [
+  //   {
+  //     text: 'Imagen original prueba',
+  //     isGpt: true,
+  //     info: {
+  //       imageUrl: 'http://localhost:3000/gpt/image-generation/1735141876758.png',
+  //       alt: 'Imagen original prueba'
+  //     }
+  //   }
+  // ]
+
   const [originalImageAndMask, setOriginalImageAndMask] = useState({
     original: undefined as string | undefined,
     mask: undefined as string | undefined
@@ -26,14 +37,21 @@ export const ImageTunningPage = () => {
     setIsLoading(true);
     setMessages((prev) => [...prev, { text, isGpt: false }]);
 
+    const {original, mask} = originalImageAndMask
 
-    const imageInfo = await imageGenerationUseCase(text);
+
+    const imageInfo = await imageGenerationUseCase(text, original, mask);
 
     setIsLoading(false);
 
     if (!imageInfo) {
       return setMessages((prev) => [...prev, { text: 'No se puede generar la imagen', isGpt: true }]);
     }
+
+    setOriginalImageAndMask({
+      original: undefined,
+      mask: undefined
+    })
 
     setMessages((prev) => [...prev, {
       text: text,
@@ -77,7 +95,7 @@ export const ImageTunningPage = () => {
         originalImageAndMask.original && (
           <div className="fixed flex flex-col items-center top-10 right-10 z-10 fade-in">
             <span>Editando</span>
-            <img className="border rounded-xl w-36 h-36 object-contain" src={originalImageAndMask.original} alt="imagen original" />
+            <img className="border rounded-xl w-36 h-36 object-contain" src={originalImageAndMask.mask ?? originalImageAndMask.original} alt="imagen original" />
             <button className="btn-primary mt-2" type="button" onClick={handleVariation}>Generar Variación</button>
           </div>
         )
@@ -89,14 +107,15 @@ export const ImageTunningPage = () => {
             {
               messages.map((message, index) => (
                 message.isGpt ? (
-                  <GptMessageImage
+                  // <GptMessageImage
+                  <GptMessageSelectableImage
                     key={index}
                     text={message.text}
                     imageUrl={message.info?.imageUrl!}
                     alt={message.info?.alt!}
-                    onImageSelected={url => setOriginalImageAndMask({
-                      original: url,
-                      mask: undefined
+                    onImageSelected={maskImageUrl => setOriginalImageAndMask({
+                      original: message.info?.imageUrl!,
+                      mask: maskImageUrl
                     }
                     )}
                   />
