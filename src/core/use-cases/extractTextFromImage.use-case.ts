@@ -1,32 +1,22 @@
-import { AudioToTextResponse } from "../../interface";
-
-
-export const audioToTextUseCase = async (audioFile: File,prompt?: string) => {
-try {
-
-  
+export const extractTextFromImageUseCase = async (file: File,prompt?: string) => {
+  try {
     const formData = new FormData();
-    formData.append('file', audioFile);
+    formData.append('file', file);
     if(prompt) formData.append('prompt', prompt);
 
-    
-    const resp = await fetch(`${import.meta.env.VITE_GPT_API}/audio-to-text`,{
+    const resp = await fetch(`${import.meta.env.VITE_GPT_API}/extract-text-from-image`,{
       method: 'POST',
       body: formData
     })
 
-    // console.log(resp);
-    
-
     if(!resp.ok) throw new Error('No se puede realizar la consulta')
-    const data = await resp.json() as AudioToTextResponse;
-
+    const data = await resp.json();
+    
     return {
       ok: true,
       data
     }
 
-    
   } catch (error) {
     console.log(error);
     

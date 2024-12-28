@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import { OrthographyPage, ProsConsPage, ProsConsStreamPage, TranslatePage, TextToAudioPage, ImageGenerationPage, ImageTunningPage, AudioToTextPage, AssistantPage, TranslateStreamPage } from "../pages";
+import { OrthographyPage, ProsConsPage, ProsConsStreamPage, TranslatePage, TextToAudioPage, ImageGenerationPage, ImageTunningPage, AudioToTextPage, AssistantPage, TranslateStreamPage, TextFromImagePage } from "../pages";
 import { DashboardLayout } from "../layouts/DashboardLayout";
 
 export const menuRoutes = [
@@ -65,6 +65,13 @@ export const menuRoutes = [
     title: "Editar imagen",
     description: "Generación continua",
     component: <ImageTunningPage />
+  },
+  {
+    to: "/text-from-image",
+    icon: "fa-solid fa-icons",
+    title: "extraer texto de imagen",
+    description: "Extraer texto de imagen",
+    component: <TextFromImagePage />
   },
   {
     to: "/assistant",

@@ -8,3 +8,4 @@ export * from './image-generation/ImageGenerationPage';
 export * from './image-tunning/ImageTunningPage';
 export * from './audio-to-text/AudioToTextPage';
 export * from './assistant/AssistantPage';
+export * from './text-from-image/TextFromImagePage';
