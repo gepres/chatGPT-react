@@ -16,7 +16,7 @@ export const ChatTemplate = () => {
       setIsLoading(true);
       setMessages((prev) => [...prev, { text, isGpt: false }]);
 
-      // useCase
+      // TODO: useCase fetch
       setIsLoading(false);
       // TODO: añadir mensaje de is gpt in true
   }
